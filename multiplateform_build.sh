@@ -71,7 +71,7 @@ dotnet publish -v n -c Release -r $selectedPlateform -p:PublishSingleFile=True -
 echo -----------------------------------
 echo Packing project
 echo -----------------------------------
-zipDestination="$zipOutput/$selectedPlateform‧zip"
+zipDestination="$zipOutput/$selectedPlateform.zip"
 cd $buildFolder
 mkdir -p $zipOutput
 zip -r $zipDestination ./*
