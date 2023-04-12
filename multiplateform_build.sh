@@ -39,11 +39,19 @@ if [ -z "${selectedPlateform}" ]
 then
 	echo "Choose your plateform"
 	PS3=Your choice: 
-	plateform=("linux-x64" "win-x64")
+	plateform=("linux-x64" "win-x64" "linux-arm64" "linux-arm")
 	select p in "${plateform[@]}"; do
 		case $p in
 			"linux-x64")
 				selectedPlateform=linux-x64
+				break;
+				;;
+			"linux-arm64")
+				selectedPlateform=linux-arm64
+				break;
+				;;
+			"linux-arm")
+				selectedPlateform=linux-arm
 				break;
 				;;
 			"win-x64")
