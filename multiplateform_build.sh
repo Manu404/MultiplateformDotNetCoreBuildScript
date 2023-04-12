@@ -9,11 +9,12 @@ currentDir="$PWD"
 outputFolder="$currentDir/output/"
 selectedPlateform=""
 zipOutput="$outputFolder/zip/"
+project="";
 
 #
 # PARSE COMMAND PARAMETER
 #
-VALID_ARGS=$(getopt -o p: --long plateform: -- "$@")
+VALID_ARGS=$(getopt -o p:t: --long plateform: -- "$@")
 if [[ $? -ne 0 ]]; then
     exit 1;
 fi
@@ -21,9 +22,14 @@ fi
 eval set -- "$VALID_ARGS"
 while [ : ]; do
   case "$1" in
-    -p | --plateform)
+    -t | --target)
 		selectedPlateform="$2"
         echo "Provided plateform is $2"
+        shift 2
+        ;;
+	-p | --project)
+		project="$2"
+        echo "Provided project is $2"
         shift 2
         ;;
     --) shift; 
@@ -66,19 +72,20 @@ fi
 #
 # BUILD OF THE PROJECT
 #
-echo -----------------------------------
-echo Building project
-echo -----------------------------------
+echo '-----------------------------------'
+echo 'Building project'
+echo '-----------------------------------'
 buildFolder="$outputFolder/build/$selectedPlateform/"
-dotnet publish -v n -c Release -r $selectedPlateform -p:PublishSingleFile=True --self-contained True -o $buildFolder
+
+dotnet publish $project -c Release -r $selectedPlateform -p:PublishSingleFile=True --self-contained True -o $buildFolder
 
 
 #
 # PACKING OF THE BUILD OUTPUT
 #
-echo -----------------------------------
-echo Packing project
-echo -----------------------------------
+echo '-----------------------------------'
+echo 'Packing project'
+echo '-----------------------------------'
 zipDestination="$zipOutput/$selectedPlateform.zip"
 cd $buildFolder
 mkdir -p $zipOutput
