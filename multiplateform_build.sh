@@ -115,10 +115,8 @@ echo "$Color_Off"
 
 if $embeded
 then
-	echo "embed"
 	buildFolder="$outputFolder/build/$selectedPlateform""_portable/"
 else
-	echo "normal"
 	buildFolder="$outputFolder/build/$selectedPlateform/"
 fi
 
