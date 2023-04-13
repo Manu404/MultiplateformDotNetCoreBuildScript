@@ -99,11 +99,11 @@ then
 				break;
 				;;
 			"win-x86")
-				selectedPlateform=win-x64
+				selectedPlateform=win-x86
 				break;
 				;;
 			"win-arm64")
-				selectedPlateform=win-x64
+				selectedPlateform=win-arm64
 				break;
 				;;
 			*)
