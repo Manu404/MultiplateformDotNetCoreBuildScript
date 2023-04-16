@@ -58,7 +58,7 @@ function requesteEmbed() {
 # IF NO COMMAND PARAMETER GIVEN, ASK THE USE THE TARGET PLATEFORM IN THE OFFICIALLY SUPPORTED PLATEFORM
 #
 function selectPlateform() {
-	if [ -z "${selectedPlateform}" ]
+	if [ -z "${selectedPlateform}" ] &&  ![ $target == "all" ]
 	then
 		echo "Choose your plateform"
 		PS3="Your choice:" 
