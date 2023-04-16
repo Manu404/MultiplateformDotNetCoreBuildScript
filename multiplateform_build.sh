@@ -2,12 +2,12 @@
 # Default variables
 currentDir="$PWD"
 outputFolder="$currentDir/output/"
-selectedPlateform=""
 zipOutput="$outputFolder/zip/"
 projectName="";
 projectVersion="";
 embeded=""
-target="one"
+target=""
+selectedPlateform=""
 
 #
 # COLORS
@@ -32,19 +32,60 @@ BsubheaderColot=$BCyan
 function requesteEmbed() {
 	if [ -z "${embeded}" ]
 	then
-		if [ $target = "one" ] && [ ! -n "$embeded" ]
-		then
-			echo "Portable or multifile ?"
-			PS3="Your choice: "
-			kind=("portable" "multi")
-			select p in "${kind[@]}"; do
+		echo " > Portable or multifile ?"
+		PS3="Your choice: "
+		kind=("portable" "multi")
+		select p in "${kind[@]}"; do
+			case $p in
+				"portable")
+					embeded=true;
+					break;
+					;;
+				"multi")
+					embeded=false;
+					break;
+					;;
+				*)
+			esac
+		done
+	fi
+}
+
+#
+# IF NO COMMAND PARAMETER GIVEN, ASK THE USE THE TARGET PLATEFORM IN THE OFFICIALLY SUPPORTED PLATEFORM
+#
+function selectPlateform() {
+	if [ -z "$selectedPlateform" ]
+	then
+		if [ ! $target == 'all' ]
+		then 
+			echo " > Choose your plateform : "
+			PS3="Your choice:" 
+			plateform=("win-x64" "win-x86" "win-arm64" "linux-x64" "linux-arm" "linux-arm64")
+			select p in "${plateform[@]}"; do
 				case $p in
-					"portable")
-						embeded=true;
+					"linux-x64")
+						selectedPlateform=linux-x64
 						break;
 						;;
-					"multi")
-						embeded=false;
+					"linux-arm64")
+						selectedPlateform=linux-arm64
+						break;
+						;;
+					"linux-arm")
+						selectedPlateform=linux-arm
+						break;
+						;;
+					"win-x64")
+						selectedPlateform=win-x64
+						break;
+						;;
+					"win-x86")
+						selectedPlateform=win-x86
+						break;
+						;;
+					"win-arm64")
+						selectedPlateform=win-arm64
 						break;
 						;;
 					*)
@@ -54,39 +95,20 @@ function requesteEmbed() {
 	fi
 }
 
-#
-# IF NO COMMAND PARAMETER GIVEN, ASK THE USE THE TARGET PLATEFORM IN THE OFFICIALLY SUPPORTED PLATEFORM
-#
-function selectPlateform() {
-	if [ -z "${selectedPlateform}" ] &&  ![ $target == "all" ]
+function selectSingleOrAll() {
+	if [ -z "${target}" ]
 	then
-		echo "Choose your plateform"
+		echo " > Build for a single or all plateforms ?"
 		PS3="Your choice:" 
-		plateform=("win-x64" "win-x86" "win-arm64" "linux-x64" "linux-arm" "linux-arm64")
+		plateform=("single" "all")
 		select p in "${plateform[@]}"; do
 			case $p in
-				"linux-x64")
-					selectedPlateform=linux-x64
+				"single")
+					target="single"
 					break;
 					;;
-				"linux-arm64")
-					selectedPlateform=linux-arm64
-					break;
-					;;
-				"linux-arm")
-					selectedPlateform=linux-arm
-					break;
-					;;
-				"win-x64")
-					selectedPlateform=win-x64
-					break;
-					;;
-				"win-x86")
-					selectedPlateform=win-x86
-					break;
-					;;
-				"win-arm64")
-					selectedPlateform=win-arm64
+				"all")
+					target="all"
 					break;
 					;;
 				*)
@@ -253,5 +275,6 @@ while [ : ]; do
 done
 
 requesteEmbed
+selectSingleOrAll
 selectPlateform
 build
