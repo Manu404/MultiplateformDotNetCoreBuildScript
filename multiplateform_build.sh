@@ -153,9 +153,11 @@ function buildSingle() {
 		buildFolder="$outputFolder/build/$selectedPlateform/"
 	fi
 
-	#rm-rf $project"/obj"
+	rm -rf $project"/obj"
+	rm -rf $buildFolder."_".$selectedPlateform
+	
 	dotnet clean $project -r $selectedPlateform
-	dotnet publish $project -c Release -r $selectedPlateform -p:PublishSingleFile=$embeded --self-contained True -o $buildFolder
+	dotnet publish $project -c Release -r $selectedPlateform -p:PublishSingleFile=$embeded --self-contained True -o $buildFolder."_".$selectedPlateform
 }
 
 #
@@ -211,8 +213,9 @@ function pack() {
 	zipDestination+=".zip"
 
 	echo "Desitnation zip: $zipDestination"
-	cd $buildFolder
+	cd $buildFolder."_".$selectedPlateform
 	mkdir -p $zipOutput
+	rm -rf zipDestination
 	zip -r $zipDestination ./*
 	cd -
 }
