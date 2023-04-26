@@ -152,12 +152,12 @@ function buildSingle() {
 	else
 		buildFolder="$outputFolder/build/$selectedPlateform/"
 	fi
-
-	rm -rf $project"/obj"
-	rm -rf $buildFolder."_".$selectedPlateform
 	
-	dotnet clean $project -r $selectedPlateform
-	dotnet publish $project -c Release -r $selectedPlateform -p:PublishSingleFile=$embeded --self-contained True -o $buildFolder."_".$selectedPlateform
+	cleanup
+	dotnet clean $project -r NET7_0  
+	dotnet publish $project -c Release -r $selectedPlateform -p:PublishSingleFile=$embeded --self-contained True -o $buildFolder
+	
+	cd $buildFolder
 }
 
 #
@@ -174,6 +174,11 @@ function build(){
 		buildSingle
 		pack
 	fi
+}
+
+function cleanup(){
+	find . -iname "bin/Release" | xargs rm -rf
+	find . -iname "obj" | xargs rm -rf
 }
 
 #
@@ -213,7 +218,6 @@ function pack() {
 	zipDestination+=".zip"
 
 	echo "Desitnation zip: $zipDestination"
-	cd $buildFolder."_".$selectedPlateform
 	mkdir -p $zipOutput
 	rm -rf zipDestination
 	zip -r $zipDestination ./*
@@ -277,7 +281,9 @@ while [ : ]; do
   esac
 done
 
+cleanup
 requesteEmbed
 selectSingleOrAll
 selectPlateform
 build
+cleanup
