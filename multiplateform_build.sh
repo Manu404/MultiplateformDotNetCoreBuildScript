@@ -153,8 +153,8 @@ function buildSingle() {
 		buildFolder="$outputFolder/build/$selectedPlateform/"
 	fi
 	
-	cleanup
-	dotnet clean $project -r NET7_0  
+	cleanup	
+	echo "=== build ==="
 	dotnet publish $project -c Release -r $selectedPlateform -p:PublishSingleFile=$embeded --self-contained True -o $buildFolder
 	
 	cd $buildFolder
@@ -167,17 +167,18 @@ function build(){
 
 	if [ $target = "all" ]
 	then
-	echo "all"
+	echo "=== bulid all ===="
 		buidForAll
 	else
-	echo "singl"
+	echo "=== build single ==="
 		buildSingle
 		pack
 	fi
 }
 
 function cleanup(){
-	find . -iname "bin/Release" | xargs rm -rf
+	echo "=== cleanup ==="
+	find . -iname "Release" | xargs rm -rf
 	find . -iname "obj" | xargs rm -rf
 }
 
