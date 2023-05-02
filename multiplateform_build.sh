@@ -155,7 +155,7 @@ function buildSingle() {
 	
 	cleanup	
 	echo "=== build ==="
-	dotnet publish $project -c Release -r $selectedPlateform -p:PublishSingleFile=$embeded --self-contained True -o $buildFolder
+	dotnet publish $project -c Release -r $selectedPlateform -p:PublishSingleFile=$embeded -p:SelfContained=true -p:PublishReadyToRun=true -o $buildFolder
 	
 	cd $buildFolder
 }
