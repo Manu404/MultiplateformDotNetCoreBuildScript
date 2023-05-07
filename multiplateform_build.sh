@@ -5,7 +5,7 @@ outputFolder="$currentDir/output/"
 zipOutput="$outputFolder/zip/"
 projectName="";
 projectVersion="";
-embeded=""
+portable=""
 target=""
 selectedPlateform=""
 
@@ -30,7 +30,7 @@ BsubheaderColot=$BCyan
 # REQUEST FOR PORTABLE OR MULTIFILE IF NOT MENTIONNED
 #
 function requesteEmbed() {
-	if [ -z "${embeded}" ]
+	if [ -z "${portable}" ]
 	then
 		echo " > Portable or multifile ?"
 		PS3="Your choice: "
@@ -38,11 +38,11 @@ function requesteEmbed() {
 		select p in "${kind[@]}"; do
 			case $p in
 				"portable")
-					embeded=true;
+					portable=true;
 					break;
 					;;
 				"multi")
-					embeded=false;
+					portable=false;
 					break;
 					;;
 				*)
@@ -146,7 +146,7 @@ function buildSingle() {
 	echo ""
 	echo "$Color_Off"
 
-	if $embeded
+	if $portable
 	then
 		buildFolder="$outputFolder/build/$selectedPlateform""_portable/"
 	else
@@ -155,8 +155,14 @@ function buildSingle() {
 	
 	cleanup	
 	echo "=== build ==="
-	dotnet publish $project -c Release -r $selectedPlateform -p:PublishSingleFile=$embeded -p:SelfContained=true -p:PublishReadyToRun=true -o $buildFolder
 	
+	if $portable
+	then
+		dotnet publish $project -c Release -r $selectedPlateform -p:PublishSingleFile=$portable -p:SelfContained=true -p:PublishReadyToRun=true -o $buildFolder
+	else
+		dotnet publish $project -c Release -r $selectedPlateform --no-self-contained -o $buildFolder
+	fi
+
 	cd $buildFolder
 }
 
@@ -211,7 +217,7 @@ function pack() {
 	fi
 	zipDestination+=$selectedPlateform;
 
-	if $embeded
+	if $portable
 	then
 		zipDestination+="_portable"
 	fi
@@ -247,7 +253,7 @@ eval set -- "$VALID_ARGS"
 while [ : ]; do
   case "$1" in
 	-e)
-		embeded=true
+		portable=true
 		echo "Produce single file assembly"
 		shift 1
 		;;
