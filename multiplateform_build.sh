@@ -117,6 +117,27 @@ function selectSingleOrAll() {
 	fi
 }
 
+function selectPdb() {
+	if [ -z "${pdb}" ]
+	then
+		echo " > Publish PDB ?"
+		PS3="Your choice:" 
+		plateform=("publish" "remove")
+		select p in "${plateform[@]}"; do
+			case $p in
+				"publish")
+					pdb=1
+					break;
+					;;
+				"remove")
+					pdb=0
+					break;
+					;;
+				*)
+			esac
+		done
+	fi
+}
 
 #
 # BUILD ALL SUPPORTED TARGET PORTABLE AND SINGLE FILE
@@ -161,6 +182,11 @@ function buildSingle() {
 		dotnet publish $project -c Release -r $selectedPlateform -p:PublishSingleFile=$portable -p:SelfContained=true -p:PublishReadyToRun=true -o $buildFolder
 	else
 		dotnet publish $project -c Release -r $selectedPlateform --no-self-contained -o $buildFolder
+	fi
+	
+	if [ $pdb -eq 0 ]
+	then
+		rm -rf $buildFolder/*.pdb
 	fi
 
 	cd $buildFolder
@@ -290,6 +316,7 @@ done
 
 cleanup
 requesteEmbed
+selectPdb
 selectSingleOrAll
 selectPlateform
 build
